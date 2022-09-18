@@ -1,1 +1,8 @@
 /build-display-Desktop_Qt_6_2_4_MinGW_64_bit-Debug
+/display/Debug
+/display/Release
+/display/.qmake.stash
+/display/display.pro.user
+/display/Makefile
+/display/Makefile.Debug
+/display/Makefile.Release

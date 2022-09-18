@@ -4,9 +4,11 @@
 #include <QMainWindow>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QMessageBox>
 #include <QtCharts/QChartView>
 #include <QtCharts/QChart>
 #include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,11 +29,15 @@ private slots:
 
     void receiveMsgEvent();
 
+    void handleError(QSerialPort::SerialPortError error);
 private:
     Ui::MainWindow *ui;
     QSerialPort *port;
-    QVector<QVector<float>> get_data;
+    QVector<QVector<QPointF>> get_data;
+    QVector<QLineSeries *> data_series;
     QChart *chart_attitude;
     QChart *chart_temperature;
+    int count;
+    float dt;
 };
 #endif // MAINWINDOW_H
