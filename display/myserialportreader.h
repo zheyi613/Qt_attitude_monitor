@@ -1,8 +1,8 @@
 #ifndef MYSERIALPORTREADER_H
 #define MYSERIALPORTREADER_H
 
-#include <QSerialPort>
-#include <QSerialPortInfo>
+#include <QtSerialPort/QSerialPort>
+#include <QtSerialPort/QSerialPortInfo>
 #include <QMessageBox>
 
 class MySerialPortReader : public QObject
