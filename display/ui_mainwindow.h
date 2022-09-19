@@ -13,7 +13,6 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFormLayout>
-#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
@@ -48,7 +47,9 @@ public:
     QSpinBox *spinBox_PacketRate;
     QPushButton *pushButton_Connect;
     QSpacerItem *verticalSpacer;
-    QGridLayout *gridLayout_ChartView;
+    QVBoxLayout *verticalLayout_ChartView;
+    QVBoxLayout *verticalLayout_ChartView1;
+    QVBoxLayout *verticalLayout_ChartView2;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -149,10 +150,22 @@ public:
 
         horizontalLayout->addLayout(verticalLayout_SerialPort);
 
-        gridLayout_ChartView = new QGridLayout();
-        gridLayout_ChartView->setObjectName(QString::fromUtf8("gridLayout_ChartView"));
+        verticalLayout_ChartView = new QVBoxLayout();
+        verticalLayout_ChartView->setObjectName(QString::fromUtf8("verticalLayout_ChartView"));
+        verticalLayout_ChartView1 = new QVBoxLayout();
+        verticalLayout_ChartView1->setObjectName(QString::fromUtf8("verticalLayout_ChartView1"));
 
-        horizontalLayout->addLayout(gridLayout_ChartView);
+        verticalLayout_ChartView->addLayout(verticalLayout_ChartView1);
+
+        verticalLayout_ChartView2 = new QVBoxLayout();
+        verticalLayout_ChartView2->setObjectName(QString::fromUtf8("verticalLayout_ChartView2"));
+
+        verticalLayout_ChartView->addLayout(verticalLayout_ChartView2);
+
+        verticalLayout_ChartView->setStretch(0, 6);
+        verticalLayout_ChartView->setStretch(1, 5);
+
+        horizontalLayout->addLayout(verticalLayout_ChartView);
 
         horizontalLayout->setStretch(0, 2);
         horizontalLayout->setStretch(1, 3);

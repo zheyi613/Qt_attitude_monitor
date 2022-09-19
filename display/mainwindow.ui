@@ -180,7 +180,14 @@
        </layout>
       </item>
       <item>
-       <layout class="QGridLayout" name="gridLayout_ChartView"/>
+       <layout class="QVBoxLayout" name="verticalLayout_ChartView" stretch="6,5">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_ChartView1"/>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_ChartView2"/>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>

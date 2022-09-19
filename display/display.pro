@@ -18,11 +18,13 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    mycombobox.cpp
+    mycombobox.cpp \
+    myserialportreader.cpp
 
 HEADERS += \
     mainwindow.h \
-    mycombobox.h
+    mycombobox.h \
+    myserialportreader.h
 
 FORMS += \
     mainwindow.ui

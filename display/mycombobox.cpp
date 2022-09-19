@@ -1,11 +1,7 @@
 #include "mycombobox.h"
 
-MyComboBox::MyComboBox(QWidget *parent):QComboBox(parent)
-{
-
-}
-
-MyComboBox::~MyComboBox()
+MyComboBox::MyComboBox(QWidget *parent) :
+    QComboBox(parent)
 {
 
 }

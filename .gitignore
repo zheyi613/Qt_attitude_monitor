@@ -2,7 +2,6 @@
 /display/Debug
 /display/Release
 /display/.qmake.stash
-/display/display.pro.user
-/display/Makefile
-/display/Makefile.Debug
-/display/Makefile.Release
+/display/*.pro.user
+/display/*.pro.user*
+/display/Makefile*

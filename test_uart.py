@@ -1,6 +1,7 @@
 import serial
 from threading import Timer
 import time
+import math
 
 count = 0
 
@@ -15,7 +16,7 @@ def test_print():
                 count = 1
         
         com.write(msg.encode())
-        t = Timer(1, test_print)
+        t = Timer(0.1, test_print)
         t.start()
 
 if __name__ == '__main__':

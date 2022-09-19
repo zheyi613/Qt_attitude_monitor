@@ -1,15 +1,16 @@
-#ifndef MYCOMBOBOX_H
-#define MYCOMBOBOX_H
+#ifndef COMBOBOX_H
+#define COMBOBOX_H
+
 
 #include <QComboBox>
 #include <QMouseEvent>
 
-class MyComboBox : public QComboBox
+class ComboBox : public QComboBox
 {
     Q_OBJECT
 public:
-    explicit MyComboBox(QWidget *parent = nullptr);
-
+    explicit ComboBox(QWidget *parent = 0);
+    ~ComboBox();
 protected:
     virtual void mousePressEvent(QMouseEvent *e);
 
@@ -17,4 +18,4 @@ signals:
     void clicked();
 };
 
-#endif // MYCOMBOBOX_H
+#endif // COMBOBOX_H

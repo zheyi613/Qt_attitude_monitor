@@ -10,6 +10,8 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 
+#include "myserialportreader.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -25,19 +27,22 @@ public:
 private slots:
     void on_pushButton_Connect_clicked();
 
+    void disconnectEvent();
+
     void findAvaliablePort();
 
-    void receiveMsgEvent();
+    void receiveDataEvent(QVector<float> data);
 
-    void handleError(QSerialPort::SerialPortError error);
 private:
     Ui::MainWindow *ui;
     QSerialPort *port;
-    QVector<QVector<QPointF>> get_data;
+    MySerialPortReader *reader;
+    QVector<QVector<float>> get_data;
     QVector<QLineSeries *> data_series;
     QChart *chart_attitude;
     QChart *chart_temperature;
-    int count;
-    float dt;
+    QValueAxis *aX;
+    uint32_t count;
+    QChartView *xx;
 };
 #endif // MAINWINDOW_H
