@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    get_data = new QList<QList<QPointF>>(4);
     // Serial port setting
     port = new QSerialPort();
     port->setDataBits(QSerialPort::Data8);
@@ -58,14 +58,22 @@ void MainWindow::on_pushButton_Connect_clicked()
             return;
         } else {
             qDebug() << "Serial open success!";
+            port->clear();
         }
-
-        ui->pushButton_Connect->setText("Disconnect");
 
         // Reset chart
         count = 0;
         chart_attitude->reset();
+//        chart_attitude->setRate(ui->spinBox_PacketRate->value());
         chart_temperature->reset();
+//        chart_temperature->setRate(ui->spinBox_PacketRate->value());
+
+        // Clear data
+        get_data.clear();
+
+        // Set button and group
+        ui->pushButton_Connect->setText("Disconnect");
+        ui->groupBox_SerialPort->setDisabled(true);
 
     } else if (ui->pushButton_Connect->text() == "Disconnect") {
         disconnectEvent();
@@ -79,6 +87,7 @@ void MainWindow::disconnectEvent()
     port->close();
     qDebug() << "Serial disconnected!";
     ui->pushButton_Connect->setText("Connect");
+    ui->groupBox_SerialPort->setEnabled(true);
 }
 
 void MainWindow::findAvaliablePort()
@@ -98,15 +107,21 @@ void MainWindow::findAvaliablePort()
 
 void MainWindow::receiveDataEvent(QVector<float> data)
 {
-    get_data.push_back(data);
-
     float x = (float)count / (float)(ui->spinBox_PacketRate->value());
 
-    chart_attitude->addData(x, data);
+    for (int i = 0; i < data.size(); i++) {
+        get_data[i].append(QPointF(x, data.at(i)));
 
-    QVector<float> tmp;
-    tmp.push_back(data.at(3));
-    chart_temperature->addData(x, tmp);
+        if (i < 3)
+            chart_attitude->addPoint(i, get_data.at(i));
+        else
+            chart_temperature->addPoint(0, get_data.at(i));
+    }
+
+    if (x >= 10) {
+        chart_attitude->setRange_x(x - 10, x);
+        chart_temperature->setRange_x(x - 10, x);
+    }
 
     count++;
 }

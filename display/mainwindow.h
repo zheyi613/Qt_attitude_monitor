@@ -37,7 +37,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QSerialPort *port;
-    QVector<QVector<float>> get_data;
+    QList<QList<QPointF>> get_data;
     MyChart *chart_attitude;
     MyChart *chart_temperature;
     uint32_t count;

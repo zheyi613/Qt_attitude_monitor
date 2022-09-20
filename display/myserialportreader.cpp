@@ -27,7 +27,7 @@ void MySerialPortReader::handleReadyRead()
     }
 
     if (str_list.size() == 4) {
-        QVector<float> data_vector;
+        QVector<float> data_vector(4);
 
         for (int i = 0; i < str_list.size(); i++) {
             data_vector.append(str_list.at(i).toFloat());
@@ -69,7 +69,7 @@ void MySerialPortReader::handleError(QSerialPort::SerialPortError error)
         msg = "Timeout!!";
         break;
     default:
-        msg = "Unknown!!";
+        return;
     }
 
     QMessageBox msgBox(QMessageBox::Critical, "Error", msg);

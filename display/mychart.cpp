@@ -5,7 +5,9 @@ MyChart::MyChart(QString title, QGraphicsItem *parent, Qt::WindowFlags wFlags) :
     my_title(title),
     my_series_vec(0),
     my_axisX(new QValueAxis()),
-    my_axisY(new QValueAxis())
+    my_axisY(new QValueAxis()),
+    y_min(0),
+    y_max(30)
 {
     setAnimationOptions(QChart::SeriesAnimations);
     createDefaultAxes();
@@ -18,7 +20,7 @@ MyChart::MyChart(QString title, QGraphicsItem *parent, Qt::WindowFlags wFlags) :
     addAxis(my_axisX, Qt::AlignBottom);
     addAxis(my_axisY, Qt::AlignLeft);
     my_axisX->setRange(0, 10);
-    my_axisY->setRange(0, 5);
+    my_axisY->setRange(y_min, y_max);
     my_axisX->setTitleText("time (s)");
 
     if (my_title == "Attitude") {
@@ -47,14 +49,17 @@ MyChart::MyChart(QString title, QGraphicsItem *parent, Qt::WindowFlags wFlags) :
     }
 }
 
-void MyChart::addData(float x, QVector<float> data)
-{
-    for (int i = 0; i < my_series_vec.size(); i++) {
-        my_series_vec.at(i)->append(QPointF(x, data.at(i)));
-    }
+void MyChart::addPoint(int index, QList<QPointF> data)
+{   
+    my_series_vec.at(index)->replace(data);
 
-    if (x >= 10)
-        my_axisX->setRange(x - 10, x);
+    if (data.last().y() > y_max) {
+        y_max = data.last().y();
+        my_axisY->setMax(y_max + 10);
+    } else if (data.last().y() < y_min) {
+        y_min = data.last().y();
+        my_axisY->setMin(y_min - 10);
+    }
 }
 
 void MyChart::reset()
@@ -64,5 +69,12 @@ void MyChart::reset()
     }
 
     my_axisX->setRange(0, 10);
-    my_axisY->setRange(0, 5);
+    y_min = 0;
+    y_max = 30;
+    my_axisY->setRange(y_min, y_max);
+}
+
+void MyChart::setRange_x(float min, float max)
+{
+    my_axisX->setRange(min, max);
 }
