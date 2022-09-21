@@ -180,12 +180,12 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_ChartView" stretch="6,5">
+       <layout class="QVBoxLayout" name="verticalLayout_ChartView" stretch="7,3">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_ChartView1"/>
+         <widget class="QCustomPlot" name="customPlot_attitude" native="true"/>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_ChartView2"/>
+         <widget class="QCustomPlot" name="customPlot_temperature" native="true"/>
         </item>
        </layout>
       </item>
@@ -210,6 +210,12 @@
    <class>MyComboBox</class>
    <extends>QComboBox</extends>
    <header>mycombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -11,7 +11,6 @@
 #include <QtCharts/QValueAxis>
 
 #include "myserialportreader.h"
-#include "mychart.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,18 +27,16 @@ public:
 private slots:
     void on_pushButton_Connect_clicked();
 
-    void disconnectEvent();
+    void disconnectSlot();
 
     void findAvaliablePort();
 
-    void receiveDataEvent(QList<float> data);
+    void receiveDataSlot(QVector<double> data);
 
 private:
     Ui::MainWindow *ui;
     QSerialPort *port;
-    QVector<QVector<float>> get_data;
-    MyChart *chart_attitude;
-    MyChart *chart_temperature;
+    QVector<QVector<double>> get_data;
     uint32_t count;
 };
 #endif // MAINWINDOW_H

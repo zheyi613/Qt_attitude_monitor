@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -18,23 +17,54 @@ MainWindow::MainWindow(QWidget *parent)
     port->setFlowControl(QSerialPort::NoFlowControl);
     MySerialPortReader *reader = new MySerialPortReader(port);
 
-    // Chart setting
-    chart_attitude = new MyChart("Attitude");
+    // Custom Plot setting
+    QCustomPlot *plot = ui->customPlot_attitude;
 
-    QChartView *chartview1 = new QChartView(chart_attitude);
-    chartview1->setRenderHint(QPainter::RenderHint::Antialiasing);
-    ui->verticalLayout_ChartView1->addWidget(chartview1, 1);
+    QString legend_name[] = {"roll", "pitch", "yaw"};
 
-    chart_temperature = new MyChart("Temperature");
+    for (int i = 0; i < 3; i++) {
+        plot->addGraph();
+        plot->graph(i)->setLineStyle(QCPGraph::lsLine);
+        plot->graph(i)->setName(legend_name[i]);
+    }
 
-    QChartView *chartview2 = new QChartView(chart_temperature);
-    chartview2->setRenderHint(QPainter::RenderHint::Antialiasing);
-    ui->verticalLayout_ChartView2->addWidget(chartview2, 1);
+    plot->graph(0)->setPen(QPen(QColor(255, 91, 0)));
+    plot->graph(1)->setPen(QPen(QColor(92, 255, 54)));
+    plot->graph(2)->setPen(QPen(QColor(60, 50, 255)));
 
-    // Connect signal to slot
+    plot->plotLayout()->insertRow(0);
+    QFont f("Consolas", 11, QFont::Bold);
+    plot->plotLayout()->addElement(0, 0, new QCPTextElement(plot, "Attitude", f));
+    plot->legend->setVisible(true);
+    plot->legend->setFont(font());
+    plot->xAxis->setLabel("time (s)");
+    plot->yAxis->setLabel("degree");
+    plot->xAxis->setRange(0, 10);
+    plot->yAxis->setRange(-10, 10);
+
+    plot->xAxis->grid();
+    plot->yAxis->grid();
+    plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    plot = ui->customPlot_temperature;
+    plot->addGraph();
+    plot->graph(0)->setPen(QPen(Qt::cyan));
+    plot->plotLayout()->insertRow(0);
+    plot->plotLayout()->addElement(0, 0, new QCPTextElement(plot, "Temperature", f));
+    plot->legend->setFont(font());
+    plot->xAxis->setLabel("time (s)");
+    plot->yAxis->setLabel("degree Celsius");
+    plot->xAxis->setRange(0, 10);
+    plot->yAxis->setRange(25, 30);
+    plot->xAxis->grid();
+    plot->yAxis->grid();
+    plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    // Connect signal and slot
     connect(ui->comboBox_Port, SIGNAL(clicked()), this, SLOT(findAvaliablePort()));
-    connect(reader, SIGNAL(portErrorOccured()), this, SLOT(disconnectEvent()));
-    connect(reader, SIGNAL(getReadData(QVector<float>)), this, SLOT(receiveDataEvent(QVector<float>)));
+    connect(reader, SIGNAL(portErrorOccured()), this, SLOT(disconnectSlot()));
+    connect(reader, SIGNAL(getReadData(QVector<double>)), this,
+            SLOT(receiveDataSlot(QVector<double>)));
 }
 
 MainWindow::~MainWindow()
@@ -63,10 +93,6 @@ void MainWindow::on_pushButton_Connect_clicked()
 
         // Reset chart
         count = 0;
-        chart_attitude->reset();
-//        chart_attitude->setRate(ui->spinBox_PacketRate->value());
-        chart_temperature->reset();
-//        chart_temperature->setRate(ui->spinBox_PacketRate->value());
 
         // Clear data
         for (int i = 0; i < get_data.size(); i++) {
@@ -78,11 +104,11 @@ void MainWindow::on_pushButton_Connect_clicked()
         ui->groupBox_SerialPort->setDisabled(true);
 
     } else if (ui->pushButton_Connect->text() == "Disconnect") {
-        disconnectEvent();
+        disconnectSlot();
     }
 }
 
-void MainWindow::disconnectEvent()
+void MainWindow::disconnectSlot()
 {
     port->clear();
     port->clearError();
@@ -107,15 +133,22 @@ void MainWindow::findAvaliablePort()
     }
 }
 
-void MainWindow::receiveDataEvent(QVector<float> data)
+void MainWindow::receiveDataSlot(QVector<double> data)
 {
-    float x = (float)count / (float)(ui->spinBox_PacketRate->value());
+    double x = (double)count / (double)(ui->spinBox_PacketRate->value());
+
+    for (int i = 0; i < data.size() - 1; i++) {
+        ui->customPlot_attitude->graph(i)->addData(x, data.at(i));
+    }
+
+    ui->customPlot_attitude->xAxis->setRange(x, 10, Qt::AlignRight);
+    ui->customPlot_attitude->replot();
+
+    ui->customPlot_temperature->graph(0)->addData(x, data.at(3));
+    ui->customPlot_temperature->xAxis->setRange(x, 10, Qt::AlignRight);
+    ui->customPlot_temperature->replot();
 
     get_data.append(data);
-    chart_attitude->addData(x, data);
-    QVector<float> tmp;
-    tmp.append(data.at(3));
-    chart_temperature->addData(x, tmp);
 
     count++;
 }

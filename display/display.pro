@@ -1,6 +1,6 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets serialport charts
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets serialport printsupport
 QT += opengl
 QT += openglwidgets
 QT += 3dcore
@@ -18,15 +18,15 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    mychart.cpp \
     mycombobox.cpp \
-    myserialportreader.cpp
+    myserialportreader.cpp \
+    qcustomplot.cpp
 
 HEADERS += \
     mainwindow.h \
-    mychart.h \
     mycombobox.h \
-    myserialportreader.h
+    myserialportreader.h \
+    qcustomplot.h
 
 FORMS += \
     mainwindow.ui

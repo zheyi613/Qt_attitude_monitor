@@ -12,7 +12,7 @@ public:
     explicit MySerialPortReader(QSerialPort *port, QObject *parent = nullptr);
 
 signals:
-    void getReadData(QVector<float> data);
+    void getReadData(QVector<double> data);
     void portErrorOccured();
 
 private slots:    

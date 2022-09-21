@@ -25,6 +25,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "mycombobox.h"
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -48,8 +49,8 @@ public:
     QPushButton *pushButton_Connect;
     QSpacerItem *verticalSpacer;
     QVBoxLayout *verticalLayout_ChartView;
-    QVBoxLayout *verticalLayout_ChartView1;
-    QVBoxLayout *verticalLayout_ChartView2;
+    QCustomPlot *customPlot_attitude;
+    QCustomPlot *customPlot_temperature;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -152,18 +153,18 @@ public:
 
         verticalLayout_ChartView = new QVBoxLayout();
         verticalLayout_ChartView->setObjectName(QString::fromUtf8("verticalLayout_ChartView"));
-        verticalLayout_ChartView1 = new QVBoxLayout();
-        verticalLayout_ChartView1->setObjectName(QString::fromUtf8("verticalLayout_ChartView1"));
+        customPlot_attitude = new QCustomPlot(centralwidget);
+        customPlot_attitude->setObjectName(QString::fromUtf8("customPlot_attitude"));
 
-        verticalLayout_ChartView->addLayout(verticalLayout_ChartView1);
+        verticalLayout_ChartView->addWidget(customPlot_attitude);
 
-        verticalLayout_ChartView2 = new QVBoxLayout();
-        verticalLayout_ChartView2->setObjectName(QString::fromUtf8("verticalLayout_ChartView2"));
+        customPlot_temperature = new QCustomPlot(centralwidget);
+        customPlot_temperature->setObjectName(QString::fromUtf8("customPlot_temperature"));
 
-        verticalLayout_ChartView->addLayout(verticalLayout_ChartView2);
+        verticalLayout_ChartView->addWidget(customPlot_temperature);
 
-        verticalLayout_ChartView->setStretch(0, 6);
-        verticalLayout_ChartView->setStretch(1, 5);
+        verticalLayout_ChartView->setStretch(0, 7);
+        verticalLayout_ChartView->setStretch(1, 3);
 
         horizontalLayout->addLayout(verticalLayout_ChartView);
 
