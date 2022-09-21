@@ -11,7 +11,7 @@ class MyChart : public QChart
 public:
     explicit MyChart(QString title, QGraphicsItem *parent = nullptr,
                      Qt::WindowFlags wFlags = {});
-    void addPoint(int index, QList<QPointF> data);
+    void addData(float x , QVector<float> data);
 
     void reset();
 
@@ -19,7 +19,7 @@ public:
 
 private:
     QString my_title;
-    QList<QLineSeries *> my_series_vec;
+    QVector<QXYSeries *> my_series_vec;
     QValueAxis *my_axisX;
     QValueAxis *my_axisY;
     float y_min;

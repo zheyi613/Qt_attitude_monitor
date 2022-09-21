@@ -29,7 +29,7 @@ MyChart::MyChart(QString title, QGraphicsItem *parent, Qt::WindowFlags wFlags) :
         QString legend_attitude[] = {"roll", "pitch", "yaw"};
 
         for (int i = 0; i < 3; i++) {
-            QLineSeries *tmp = new QLineSeries(this);
+            QXYSeries *tmp = new QLineSeries(this);
 
             tmp->setName(legend_attitude[i]);
             addSeries(tmp);
@@ -40,7 +40,7 @@ MyChart::MyChart(QString title, QGraphicsItem *parent, Qt::WindowFlags wFlags) :
     } else if (my_title == "Temperature") {
         legend()->hide();
 
-        QLineSeries *tmp = new QLineSeries(this);
+        QXYSeries *tmp = new QLineSeries(this);
 
         addSeries(tmp);
         my_series_vec.push_back(tmp);
@@ -49,17 +49,22 @@ MyChart::MyChart(QString title, QGraphicsItem *parent, Qt::WindowFlags wFlags) :
     }
 }
 
-void MyChart::addPoint(int index, QList<QPointF> data)
+void MyChart::addData(float x, QVector<float> data)
 {   
-    my_series_vec.at(index)->replace(data);
+    for (int i = 0; i < my_series_vec.size(); i++) {
+        my_series_vec.at(i)->append(x, data.at(i));
 
-    if (data.last().y() > y_max) {
-        y_max = data.last().y();
-        my_axisY->setMax(y_max + 10);
-    } else if (data.last().y() < y_min) {
-        y_min = data.last().y();
-        my_axisY->setMin(y_min - 10);
+        if (data.at(i) > y_max) {
+            y_max = data.at(i);
+            my_axisY->setMax(y_max + 10);
+        } else if (data.at(i) < y_min) {
+            y_min = data.at(i);
+            my_axisY->setMin(y_min - 10);
+        }
     }
+
+    if (x >= 10)
+        my_axisX->setRange(x - 10, x);
 }
 
 void MyChart::reset()

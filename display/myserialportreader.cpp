@@ -27,7 +27,7 @@ void MySerialPortReader::handleReadyRead()
     }
 
     if (str_list.size() == 4) {
-        QVector<float> data_vector(4);
+        QVector<float> data_vector;
 
         for (int i = 0; i < str_list.size(); i++) {
             data_vector.append(str_list.at(i).toFloat());

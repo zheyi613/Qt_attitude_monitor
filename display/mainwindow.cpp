@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    get_data = new QList<QList<QPointF>>(4);
+
     // Serial port setting
     port = new QSerialPort();
     port->setDataBits(QSerialPort::Data8);
@@ -69,7 +69,9 @@ void MainWindow::on_pushButton_Connect_clicked()
 //        chart_temperature->setRate(ui->spinBox_PacketRate->value());
 
         // Clear data
-        get_data.clear();
+        for (int i = 0; i < get_data.size(); i++) {
+            get_data[i].clear();
+        }
 
         // Set button and group
         ui->pushButton_Connect->setText("Disconnect");
@@ -109,19 +111,11 @@ void MainWindow::receiveDataEvent(QVector<float> data)
 {
     float x = (float)count / (float)(ui->spinBox_PacketRate->value());
 
-    for (int i = 0; i < data.size(); i++) {
-        get_data[i].append(QPointF(x, data.at(i)));
-
-        if (i < 3)
-            chart_attitude->addPoint(i, get_data.at(i));
-        else
-            chart_temperature->addPoint(0, get_data.at(i));
-    }
-
-    if (x >= 10) {
-        chart_attitude->setRange_x(x - 10, x);
-        chart_temperature->setRange_x(x - 10, x);
-    }
+    get_data.append(data);
+    chart_attitude->addData(x, data);
+    QVector<float> tmp;
+    tmp.append(data.at(3));
+    chart_temperature->addData(x, tmp);
 
     count++;
 }
