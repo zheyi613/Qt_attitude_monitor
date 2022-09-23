@@ -19,7 +19,6 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
@@ -47,10 +46,10 @@ public:
     QComboBox *comboBox_BaudRate;
     QSpinBox *spinBox_PacketRate;
     QPushButton *pushButton_Connect;
-    QSpacerItem *verticalSpacer;
+    QWidget *widget_3DCube;
     QVBoxLayout *verticalLayout_ChartView;
+    QCustomPlot *customPlot_accel;
     QCustomPlot *customPlot_attitude;
-    QCustomPlot *customPlot_temperature;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -144,27 +143,29 @@ public:
 
         verticalLayout_SerialPort->addWidget(pushButton_Connect);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        widget_3DCube = new QWidget(centralwidget);
+        widget_3DCube->setObjectName(QString::fromUtf8("widget_3DCube"));
 
-        verticalLayout_SerialPort->addItem(verticalSpacer);
+        verticalLayout_SerialPort->addWidget(widget_3DCube);
 
+        verticalLayout_SerialPort->setStretch(0, 1);
+        verticalLayout_SerialPort->setStretch(1, 1);
+        verticalLayout_SerialPort->setStretch(2, 5);
 
         horizontalLayout->addLayout(verticalLayout_SerialPort);
 
         verticalLayout_ChartView = new QVBoxLayout();
         verticalLayout_ChartView->setObjectName(QString::fromUtf8("verticalLayout_ChartView"));
+        customPlot_accel = new QCustomPlot(centralwidget);
+        customPlot_accel->setObjectName(QString::fromUtf8("customPlot_accel"));
+
+        verticalLayout_ChartView->addWidget(customPlot_accel);
+
         customPlot_attitude = new QCustomPlot(centralwidget);
         customPlot_attitude->setObjectName(QString::fromUtf8("customPlot_attitude"));
 
         verticalLayout_ChartView->addWidget(customPlot_attitude);
 
-        customPlot_temperature = new QCustomPlot(centralwidget);
-        customPlot_temperature->setObjectName(QString::fromUtf8("customPlot_temperature"));
-
-        verticalLayout_ChartView->addWidget(customPlot_temperature);
-
-        verticalLayout_ChartView->setStretch(0, 7);
-        verticalLayout_ChartView->setStretch(1, 3);
 
         horizontalLayout->addLayout(verticalLayout_ChartView);
 

@@ -5,3 +5,4 @@
 /display/*.pro.user
 /display/*.pro.user*
 /display/Makefile*
+/stm32f767zi/build

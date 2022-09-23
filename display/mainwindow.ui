@@ -23,7 +23,7 @@
     <item row="0" column="0" colspan="2">
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,3">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_SerialPort" stretch="0,0,0">
+       <layout class="QVBoxLayout" name="verticalLayout_SerialPort" stretch="1,1,5">
         <item>
          <widget class="QGroupBox" name="groupBox_SerialPort">
           <property name="font">
@@ -165,27 +165,17 @@
          </widget>
         </item>
         <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
+         <widget class="QWidget" name="widget_3DCube" native="true"/>
         </item>
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_ChartView" stretch="7,3">
+       <layout class="QVBoxLayout" name="verticalLayout_ChartView" stretch="0,0">
         <item>
-         <widget class="QCustomPlot" name="customPlot_attitude" native="true"/>
+         <widget class="QCustomPlot" name="customPlot_accel" native="true"/>
         </item>
         <item>
-         <widget class="QCustomPlot" name="customPlot_temperature" native="true"/>
+         <widget class="QCustomPlot" name="customPlot_attitude" native="true"/>
         </item>
        </layout>
       </item>

@@ -3,13 +3,24 @@
 
 #include <QDebug>
 
+#include <Qt3DExtras/Qt3DWindow>
+#include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DExtras/QFirstPersonCameraController>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DCore/QEntity>
+#include <Qt3DCore/QTransform>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QPointLight>
+#include <Qt3DRender/QSceneLoader>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    // Serial port setting
+    // Serial port setup
     port = new QSerialPort();
     port->setDataBits(QSerialPort::Data8);
     port->setParity(QSerialPort::NoParity);
@@ -17,68 +28,88 @@ MainWindow::MainWindow(QWidget *parent)
     port->setFlowControl(QSerialPort::NoFlowControl);
     MySerialPortReader *reader = new MySerialPortReader(port);
 
-    // Custom plot layout setup
-    QCustomPlot *plot = ui->customPlot_attitude;
-    plot->plotLayout()->clear();
-    plot->setFont(font());
-    QCPLegend *legend = new QCPLegend();
-    legend->setFont(QFont("Consolas", 11, QFont::Medium));
-    legend->setVisible(true);
-    legend->setBorderPen(Qt::NoPen);
-    legend->setFillOrder(QCPLayoutGrid::foColumnsFirst);
-    QCPAxisRect *rect1 = new QCPAxisRect(plot);
-    rect1->setupFullAxesBox(true);
-    QCPAxisRect *rect2 = new QCPAxisRect(plot);
-    rect2->setupFullAxesBox(true);
-    plot->plotLayout()->addElement(0, 0, legend);
-    plot->plotLayout()->addElement(1, 0, rect1);
-    plot->plotLayout()->addElement(2, 0, rect2);
-    plot->plotLayout()->setRowStretchFactor(0, 0.001);
-    plot->plotLayout()->setRowStretchFactor(2, 0.5);
+    // Custom plot setup
+    QString accel_name[] = {"accel_x", "accel_y", "accel_z"};
+    setCustomPlot(ui->customPlot_accel, accel_name);
+    ui->customPlot_accel->yAxis->setLabel("gravity");
+    ui->customPlot_accel->yAxis->setRange(-2, 2);
 
-    foreach (QCPAxisRect *rect, plot->axisRects()) {
-        foreach (QCPAxis *axis, rect->axes()) {
-            axis->setLayer("axes");
-            axis->grid()->setLayer("grid");
-        }
-    }
+    QString attitude_name[] = {"roll", "pitch", "yaw"};
+    setCustomPlot(ui->customPlot_attitude, attitude_name);
+    ui->customPlot_attitude->xAxis->setLabel("time (s)");
+    ui->customPlot_attitude->yAxis->setLabel("degree");
+    ui->customPlot_attitude->yAxis->setRange(-90, 90);
 
-    plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+    // Set timer to replot (50fps)
+    timer = new QTimer(this);
+    timer->setInterval(20);
 
-    // Custom plot graph setup
-    QString name[] = {"roll", "pitch", "yaw", "temperature"};
-
-    for (int i = 0; i < 3; i++) {
-        plot->addGraph(rect1->axis(QCPAxis::atBottom), rect1->axis(QCPAxis::atLeft));
-        plot->graph(i)->setLineStyle(QCPGraph::lsLine);
-        plot->graph(i)->setName(name[i]);
-    }
-
-    plot->addGraph(rect2->axis(QCPAxis::atBottom), rect2->axis(QCPAxis::atLeft));
-
-    plot->graph(0)->setPen(QPen(QColor(255, 91, 0)));
-    plot->graph(1)->setPen(QPen(QColor(92, 255, 54)));
-    plot->graph(2)->setPen(QPen(QColor(60, 50, 255)));
-    plot->graph(3)->setPen(QPen(Qt::cyan));
-
-    plot->graph(0)->keyAxis()->setRange(0, 10);
-    plot->graph(3)->keyAxis()->setRange(0, 10);
-    plot->graph(3)->keyAxis()->setLabel("time (s)");
-    plot->graph(0)->valueAxis()->setRange(-10, 10);
-    plot->graph(3)->valueAxis()->setRange(25, 33);
-    plot->graph(0)->valueAxis()->setLabel("degree");
-    plot->graph(3)->valueAxis()->setLabel("degree Celsius");
+    // 3D cube setup
+    Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();
+    view->defaultFrameGraph()->setClearColor(QColor(QRgb(0x4d4d4f)));
+    ui->widget_3DCube = QWidget::createWindowContainer(view);
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+    Qt3DRender::QCamera *cameraEntity = view->camera();
+    cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    cameraEntity->setPosition(QVector3D(0, 0, 20.0f));
+    cameraEntity->setUpVector(QVector3D(0, 1, 0));
+    cameraEntity->setViewCenter(QVector3D(0, 0, 0));
+    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(rootEntity);
+    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight(lightEntity);
+    light->setColor("white");
+    light->setIntensity(1);
+    lightEntity->addComponent(light);
+    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform(lightEntity);
+    lightTransform->setTranslation(cameraEntity->position());
+    lightEntity->addComponent(lightTransform);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(rootEntity);
+    camController->setCamera(cameraEntity);
+    Qt3DExtras::QCuboidMesh *cuboid = new Qt3DExtras::QCuboidMesh();
+    Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
+    cuboidTransform->setScale(4.0f);
+    cuboidTransform->setTranslation(QVector3D(5.0f, -4.0f, 0.0f));
+    Qt3DExtras::QPhongMaterial *cuboidMaterial = new Qt3DExtras::QPhongMaterial();
+    cuboidMaterial->setDiffuse(QColor(QRgb(0x665423)));
+    Qt3DCore::QEntity *cuboidEntity = new Qt3DCore::QEntity(rootEntity);
+    cuboidEntity->addComponent(cuboid);
+    cuboidEntity->addComponent(cuboidMaterial);
+    cuboidEntity->addComponent(cuboidTransform);
+    view->setRootEntity(rootEntity);
+    cuboidEntity->setEnabled(true);
 
     // Connect signal and slot
     connect(ui->comboBox_Port, SIGNAL(clicked()), this, SLOT(findAvaliablePort()));
     connect(reader, SIGNAL(portErrorOccured()), this, SLOT(disconnectSlot()));
     connect(reader, SIGNAL(getReadData(QVector<double>)), this,
             SLOT(receiveDataSlot(QVector<double>)));
+    connect(timer, SIGNAL(timeout()), this, SLOT(replotSlot()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::setCustomPlot(QCustomPlot *plot, QString legend_name[3])
+{
+    QCPLegend *legend = plot->legend;
+    legend->setVisible(true);
+    legend->setFont(QFont(font()));
+    plot->axisRect()->insetLayout()->
+            setInsetAlignment(0, Qt::AlignTop | Qt::AlignLeft);
+    plot->axisRect()->setupFullAxesBox(true);
+
+    for (int i = 0; i < 3; i++) {
+        plot->addGraph();
+        plot->graph(i)->setLineStyle(QCPGraph::lsLine);
+        plot->graph(i)->setName(legend_name[i]);
+    }
+
+    plot->graph(0)->setPen(QPen(QColor(255, 91, 0)));
+    plot->graph(1)->setPen(QPen(QColor(92, 255, 54)));
+    plot->graph(2)->setPen(QPen(QColor(60, 50, 255)));
+
+    plot->xAxis->setRange(0, 10);
 }
 
 void MainWindow::on_pushButton_Connect_clicked()
@@ -101,9 +132,19 @@ void MainWindow::on_pushButton_Connect_clicked()
         }
 
         // Reset chart
-        count = 0;
+        for (int i = 0; i < 3; i++) {
+            ui->customPlot_accel->graph(i)->data().data()->clear();
+            ui->customPlot_attitude->graph(i)->data().data()->clear();
+        }
+
+        ui->customPlot_accel->setInteraction(QCP::iRangeDrag, false);
+        ui->customPlot_accel->setInteraction(QCP::iRangeZoom, false);
+        ui->customPlot_attitude->setInteraction(QCP::iRangeDrag, false);
+        ui->customPlot_attitude->setInteraction(QCP::iRangeZoom, false);
 
         // Clear data
+        count = 0;
+
         for (int i = 0; i < get_data.size(); i++) {
             get_data[i].clear();
         }
@@ -112,6 +153,8 @@ void MainWindow::on_pushButton_Connect_clicked()
         ui->pushButton_Connect->setText("Disconnect");
         ui->groupBox_SerialPort->setDisabled(true);
 
+        // Timer start
+        timer->start();
     } else if (ui->pushButton_Connect->text() == "Disconnect") {
         disconnectSlot();
     }
@@ -119,10 +162,15 @@ void MainWindow::on_pushButton_Connect_clicked()
 
 void MainWindow::disconnectSlot()
 {
+    timer->stop();
     port->clear();
     port->clearError();
     port->close();
     qDebug() << "Serial disconnected!";
+    ui->customPlot_accel->setInteraction(QCP::iRangeDrag, true);
+    ui->customPlot_accel->setInteraction(QCP::iRangeZoom, true);
+    ui->customPlot_attitude->setInteraction(QCP::iRangeDrag, true);
+    ui->customPlot_attitude->setInteraction(QCP::iRangeZoom, true);
     ui->pushButton_Connect->setText("Connect");
     ui->groupBox_SerialPort->setEnabled(true);
 }
@@ -144,25 +192,27 @@ void MainWindow::findAvaliablePort()
 
 void MainWindow::receiveDataSlot(QVector<double> data)
 {
-    double x = (double)count / (double)(ui->spinBox_PacketRate->value());
+    x = (double)count / (double)(ui->spinBox_PacketRate->value());
 
     for (int i = 0; i < data.size(); i++) {
-        ui->customPlot_attitude->graph(i)->addData(x, data.at(i));
+        if (i < 3) {
+            ui->customPlot_accel->graph(i)->addData(x, data.at(i));
+        } else {
+            ui->customPlot_attitude->graph(i - 3)->addData(x, data.at(i));
+        }
     }
-
-    QCustomPlot *plot = ui->customPlot_attitude;
-    plot->graph(0)->keyAxis()->setRange(x, 10, Qt::AlignRight);
-    plot->graph(3)->keyAxis()->setRange(x, 10, Qt::AlignRight);
-    plot->replot();
-
-//    ui->customPlot_attitude->xAxis->setRange(x, 10, Qt::AlignRight);
-//    ui->customPlot_attitude->replot();
-
-//    ui->customPlot_temperature->graph(0)->addData(x, data.at(3));
-//    ui->customPlot_temperature->xAxis->setRange(x, 10, Qt::AlignRight);
-//    ui->customPlot_temperature->replot();
 
     get_data.append(data);
 
     count++;
+}
+
+void MainWindow::replotSlot()
+{
+    ui->customPlot_accel->xAxis->
+            setRange(x, ui->customPlot_accel->xAxis->range().size(), Qt::AlignRight);
+    ui->customPlot_accel->replot();
+    ui->customPlot_attitude->xAxis->
+            setRange(x, ui->customPlot_attitude->xAxis->range().size(), Qt::AlignRight);
+    ui->customPlot_attitude->replot();
 }

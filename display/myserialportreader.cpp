@@ -26,7 +26,7 @@ void MySerialPortReader::handleReadyRead()
         return;
     }
 
-    if (str_list.size() == 4) {
+    if (str_list.size() == 6) {
         QVector<double> data_vector;
 
         for (int i = 0; i < str_list.size(); i++) {
