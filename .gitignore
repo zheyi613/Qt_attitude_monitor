@@ -1,0 +1,6 @@
+/monitor/Debug
+/monitor/Release
+/monitor/.qmake.stash
+/monitor/*.pro.user
+/monitor/*.pro.user*
+/monitor/Makefile*
