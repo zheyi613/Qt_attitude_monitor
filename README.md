@@ -14,6 +14,7 @@ Use Qt GUI to visualize attitude and plot 6-axis data
 5. 若要斷開連線，則點擊 `Disconnected`，停止接收時可使用滑鼠對圖表進行 `拖曳`、`滾輪放大`
 
 ### Note
+- 串列埠參數 : `8 bits`、`No parity`、`One stop bit`、`No flow control`
 - 每個封包中以逗號 (',') 隔開，最後為換行符號 ('\n') ，不需回車 ('\r')
 - format : "accel_x,accel_y,accel_z,roll,pitch,yaw\n"
 - 時間軸由封包速率 (感測器主控端) 決定，非計時器計算
