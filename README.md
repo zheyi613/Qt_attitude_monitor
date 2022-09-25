@@ -18,3 +18,4 @@ Use Qt GUI to visualize attitude and plot 6-axis data
 - format : "accel_x,accel_y,accel_z,roll,pitch,yaw\n"
 - 時間軸由封包速率 (感測器主控端) 決定，非計時器計算
 - 立方體與圖表更新率為 60fps
+- 若串列埠出現錯誤 ex : 存取遭拒，會跳出通知，並提示原因，串列埠回復成未連接狀態，如步驟 4.，可點擊 `Connect` 嘗試重新連接
