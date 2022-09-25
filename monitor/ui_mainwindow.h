@@ -186,7 +186,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Attitude Display", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Monitor", nullptr));
         groupBox_SerialPort->setTitle(QCoreApplication::translate("MainWindow", "Serial Port", nullptr));
         label_Port->setText(QCoreApplication::translate("MainWindow", "Port :", nullptr));
         label_BaudRate->setText(QCoreApplication::translate("MainWindow", "BaudRate :", nullptr));
