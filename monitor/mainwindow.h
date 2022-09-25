@@ -38,9 +38,9 @@ private slots:
 
     void findAvaliablePort();
 
-    void receiveDataSlot(QVector<double> data);
+    void receiveDataSlot(const QVector<double> &data);
 
-    void replotSlot();
+    void updateSlot();
 
 private:
     Ui::MainWindow *ui;

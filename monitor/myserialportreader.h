@@ -12,15 +12,16 @@ public:
     explicit MySerialPortReader(QSerialPort *port, QObject *parent = nullptr);
 
 signals:
-    void getReadData(QVector<double> data);
+    void getReadData(const QVector<double> &data);
     void portErrorOccured();
 
-private slots:    
-    void handleError(QSerialPort::SerialPortError error);
+private slots:
     void handleReadyRead();
+    void handleLine(const QByteArray &line);
+    void handleError(QSerialPort::SerialPortError error);
 
 private:
-    QSerialPort *my_port = nullptr;
+    QSerialPort *m_port = nullptr;
 };
 
 #endif // MYSERIALPORTREADER_H

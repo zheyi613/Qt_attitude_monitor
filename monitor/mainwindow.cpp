@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     port->setParity(QSerialPort::NoParity);
     port->setStopBits(QSerialPort::OneStop);
     port->setFlowControl(QSerialPort::NoFlowControl);
+    port->setReadBufferSize(512);
     MySerialPortReader *reader = new MySerialPortReader(port);
 
     // Custom plot setup
@@ -29,9 +30,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->customPlot_attitude->yAxis->setLabel("degree");
     ui->customPlot_attitude->yAxis->setRange(-90, 90);
 
-    // Set timer to replot (50fps)
+    // Set timer to replot (60fps)
     timer = new QTimer(this);
-    timer->setInterval(20);
+    timer->setInterval(16);
 
     // Cube viewer setup
     Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();
@@ -59,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(reader, SIGNAL(portErrorOccured()), this, SLOT(disconnectSlot()));
     connect(reader, SIGNAL(getReadData(QVector<double>)), this,
             SLOT(receiveDataSlot(QVector<double>)));
-    connect(timer, SIGNAL(timeout()), this, SLOT(replotSlot()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateSlot()));
 }
 
 MainWindow::~MainWindow()
@@ -86,7 +87,7 @@ void MainWindow::setCustomPlot(QCustomPlot *plot, QString legend_name[3])
     plot->graph(1)->setPen(QPen(QColor(92, 255, 54)));
     plot->graph(2)->setPen(QPen(QColor(60, 50, 255)));
 
-    plot->xAxis->setRange(0, 10);
+    plot->xAxis->setRange(0, 5);
 }
 
 void MainWindow::on_pushButton_Connect_clicked()
@@ -98,7 +99,6 @@ void MainWindow::on_pushButton_Connect_clicked()
 
         port->setPortName(ui->comboBox_Port->currentText());
         port->setBaudRate(ui->comboBox_BaudRate->currentText().toInt());
-        port->setReadBufferSize(1000);
 
         if (!port->open(QIODevice::ReadWrite)) {
             qDebug() << "Serial open failed!";
@@ -121,10 +121,7 @@ void MainWindow::on_pushButton_Connect_clicked()
 
         // Clear data
         count = 0;
-
-        for (int i = 0; i < get_data.size(); i++) {
-            get_data[i].clear();
-        }
+        get_data.clear();
 
         // Set button and group
         ui->pushButton_Connect->setText("Disconnect");
@@ -167,7 +164,7 @@ void MainWindow::findAvaliablePort()
     }
 }
 
-void MainWindow::receiveDataSlot(QVector<double> data)
+void MainWindow::receiveDataSlot(const QVector<double> &data)
 {
     x = (double)count / (double)(ui->spinBox_PacketRate->value());
 
@@ -184,7 +181,7 @@ void MainWindow::receiveDataSlot(QVector<double> data)
     count++;
 }
 
-void MainWindow::replotSlot()
+void MainWindow::updateSlot()
 {
     // Replot
     ui->customPlot_accel->xAxis->
@@ -194,7 +191,9 @@ void MainWindow::replotSlot()
             setRange(x, ui->customPlot_attitude->xAxis->range().size(), Qt::AlignRight);
     ui->customPlot_attitude->replot();
     // Update attitude with euler angle
-    cuboidTransform->setRotationY((float)(get_data.last().at(5)));
-    cuboidTransform->setRotationZ((float)(-get_data.last().at(4)));
-    cuboidTransform->setRotationX((float)(get_data.last().at(3)));
+    if (!get_data.isEmpty()) {
+        cuboidTransform->setRotationY((float)(get_data.last().at(5)));
+        cuboidTransform->setRotationZ((float)(-get_data.last().at(4)));
+        cuboidTransform->setRotationX((float)(get_data.last().at(3)));
+    }
 }

@@ -113,6 +113,9 @@ public:
         comboBox_BaudRate->addItem(QString());
         comboBox_BaudRate->addItem(QString());
         comboBox_BaudRate->addItem(QString());
+        comboBox_BaudRate->addItem(QString());
+        comboBox_BaudRate->addItem(QString());
+        comboBox_BaudRate->addItem(QString());
         comboBox_BaudRate->setObjectName(QString::fromUtf8("comboBox_BaudRate"));
 
         verticalLayout_Parameter->addWidget(comboBox_BaudRate);
@@ -175,7 +178,7 @@ public:
         retranslateUi(MainWindow);
 
         comboBox_Port->setCurrentIndex(-1);
-        comboBox_BaudRate->setCurrentIndex(3);
+        comboBox_BaudRate->setCurrentIndex(4);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -193,7 +196,10 @@ public:
         comboBox_BaudRate->setItemText(0, QCoreApplication::translate("MainWindow", "9600", nullptr));
         comboBox_BaudRate->setItemText(1, QCoreApplication::translate("MainWindow", "19200", nullptr));
         comboBox_BaudRate->setItemText(2, QCoreApplication::translate("MainWindow", "38400", nullptr));
-        comboBox_BaudRate->setItemText(3, QCoreApplication::translate("MainWindow", "115200", nullptr));
+        comboBox_BaudRate->setItemText(3, QCoreApplication::translate("MainWindow", "57600", nullptr));
+        comboBox_BaudRate->setItemText(4, QCoreApplication::translate("MainWindow", "115200", nullptr));
+        comboBox_BaudRate->setItemText(5, QCoreApplication::translate("MainWindow", "230400", nullptr));
+        comboBox_BaudRate->setItemText(6, QCoreApplication::translate("MainWindow", "460800", nullptr));
 
         pushButton_Connect->setText(QCoreApplication::translate("MainWindow", "Connect", nullptr));
     } // retranslateUi

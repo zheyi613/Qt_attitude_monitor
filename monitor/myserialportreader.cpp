@@ -2,35 +2,30 @@
 
 MySerialPortReader::MySerialPortReader(QSerialPort *port, QObject *parent) :
     QObject(parent),
-    my_port(port)
+    m_port(port)
 {
-    connect(my_port, &QSerialPort::readyRead, this, &MySerialPortReader::handleReadyRead);
-    connect(my_port, &QSerialPort::errorOccurred, this, &MySerialPortReader::handleError);
+    connect(m_port, &QSerialPort::readyRead, this, &MySerialPortReader::handleReadyRead);
+    connect(m_port, &QSerialPort::errorOccurred, this, &MySerialPortReader::handleError);
 }
 
 void MySerialPortReader::handleReadyRead()
 {
-    QByteArray str_receive;
-
-    if (my_port->canReadLine())
-        str_receive = my_port->readLine();
-    else
-        return;
-
-    QByteArrayList str_list;
-
-    if (!str_receive.isEmpty()) {
-        str_receive.remove(str_receive.length() - 1, 1);
-        str_list = str_receive.split(',');
-    } else {
-        return;
+    while (m_port->canReadLine()) {
+        handleLine(m_port->readLine());
     }
+}
+
+void MySerialPortReader::handleLine(const QByteArray &line)
+{
+    QByteArrayList str_list = line.split(',');
+
+    str_list.last().remove(str_list.last().length() - 1, 1);
 
     if (str_list.size() == 6) {
         QVector<double> data_vector;
 
         for (int i = 0; i < str_list.size(); i++) {
-            data_vector.append(str_list.at(i).toFloat());
+            data_vector.append(str_list.at(i).toDouble());
         }
 
         emit getReadData(data_vector);
