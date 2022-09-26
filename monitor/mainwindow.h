@@ -48,10 +48,6 @@ private:
     QTimer *timer;
     Qt3DCore::QTransform *cuboidTransform;
     QVector<QVector<double>> get_data;
-    double accel_max;
-    double accel_min;
-    double attitude_max;
-    double attitude_min;
     double x;
     uint32_t count;
 };

@@ -58,8 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Connect signal and slot
     connect(ui->comboBox_Port, SIGNAL(clicked()), this, SLOT(findAvaliablePort()));
     connect(reader, SIGNAL(portErrorOccured()), this, SLOT(disconnectSlot()));
-    connect(reader, SIGNAL(getReadData(QVector<double>)), this,
-            SLOT(receiveDataSlot(QVector<double>)));
+    connect(reader, SIGNAL(getReadData(const QVector<double>&)), this,
+            SLOT(receiveDataSlot(const QVector<double>&)));
     connect(timer, SIGNAL(timeout()), this, SLOT(updateSlot()));
 }
 
@@ -169,11 +169,10 @@ void MainWindow::receiveDataSlot(const QVector<double> &data)
     x = (double)count / (double)(ui->spinBox_PacketRate->value());
 
     for (int i = 0; i < data.size(); i++) {
-        if (i < 3) {
+        if (i < 3)
             ui->customPlot_accel->graph(i)->addData(x, data.at(i));
-        } else {
+        else
             ui->customPlot_attitude->graph(i - 3)->addData(x, data.at(i));
-        }
     }
 
     get_data.append(data);
