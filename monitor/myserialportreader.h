@@ -13,11 +13,14 @@ public:
 
 signals:
     void getReadData(const QVector<double> &data);
+
     void portErrorOccured();
 
 private slots:
     void handleReadyRead();
+
     void handleLine(const QByteArray &line);
+
     void handleError(QSerialPort::SerialPortError error);
 
 private:

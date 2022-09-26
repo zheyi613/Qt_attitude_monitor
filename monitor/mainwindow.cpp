@@ -176,7 +176,6 @@ void MainWindow::receiveDataSlot(const QVector<double> &data)
     }
 
     get_data.append(data);
-
     count++;
 }
 
