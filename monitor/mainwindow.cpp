@@ -114,8 +114,12 @@ void MainWindow::on_pushButton_Connect_clicked()
             ui->customPlot_attitude->graph(i)->data().data()->clear();
         }
 
+        ui->customPlot_accel->xAxis->setRange(0, 5);
+        ui->customPlot_accel->yAxis->setRange(-2, 2);
         ui->customPlot_accel->setInteraction(QCP::iRangeDrag, false);
         ui->customPlot_accel->setInteraction(QCP::iRangeZoom, false);
+        ui->customPlot_attitude->xAxis->setRange(0, 5);
+        ui->customPlot_attitude->yAxis->setRange(-90, 90);
         ui->customPlot_attitude->setInteraction(QCP::iRangeDrag, false);
         ui->customPlot_attitude->setInteraction(QCP::iRangeZoom, false);
 

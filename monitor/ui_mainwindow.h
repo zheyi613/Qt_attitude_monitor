@@ -116,6 +116,7 @@ public:
         comboBox_BaudRate->addItem(QString());
         comboBox_BaudRate->addItem(QString());
         comboBox_BaudRate->addItem(QString());
+        comboBox_BaudRate->addItem(QString());
         comboBox_BaudRate->setObjectName(QString::fromUtf8("comboBox_BaudRate"));
 
         verticalLayout_Parameter->addWidget(comboBox_BaudRate);
@@ -200,6 +201,7 @@ public:
         comboBox_BaudRate->setItemText(4, QCoreApplication::translate("MainWindow", "115200", nullptr));
         comboBox_BaudRate->setItemText(5, QCoreApplication::translate("MainWindow", "230400", nullptr));
         comboBox_BaudRate->setItemText(6, QCoreApplication::translate("MainWindow", "460800", nullptr));
+        comboBox_BaudRate->setItemText(7, QCoreApplication::translate("MainWindow", "921600", nullptr));
 
         pushButton_Connect->setText(QCoreApplication::translate("MainWindow", "Connect", nullptr));
     } // retranslateUi
