@@ -190,9 +190,12 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_ChartView" stretch="0,0">
+       <layout class="QVBoxLayout" name="verticalLayout_ChartView" stretch="0,0,0">
         <item>
          <widget class="QCustomPlot" name="customPlot_accel" native="true"/>
+        </item>
+        <item>
+         <widget class="QCustomPlot" name="customPlot_gyro" native="true"/>
         </item>
         <item>
          <widget class="QCustomPlot" name="customPlot_attitude" native="true"/>

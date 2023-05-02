@@ -21,13 +21,18 @@ MainWindow::MainWindow(QWidget *parent)
     // Custom plot setup
     QString accel_name[] = {"accel_x", "accel_y", "accel_z"};
     setCustomPlot(ui->customPlot_accel, accel_name);
-    ui->customPlot_accel->yAxis->setLabel("gravity");
-    ui->customPlot_accel->yAxis->setRange(-2, 2);
+    ui->customPlot_accel->yAxis->setLabel("acceleration(g/s^2)");
+    ui->customPlot_accel->yAxis->setRange(-4, 4);
+
+    QString gyro_name[] = {"gyro_x", "gyro_y", "gyro_z"};
+    setCustomPlot(ui->customPlot_gyro, gyro_name);
+    ui->customPlot_gyro->yAxis->setLabel("angular velocity(deg/s)");
+    ui->customPlot_gyro->yAxis->setRange(-90, 90);
 
     QString attitude_name[] = {"roll", "pitch", "yaw"};
     setCustomPlot(ui->customPlot_attitude, attitude_name);
     ui->customPlot_attitude->xAxis->setLabel("time (s)");
-    ui->customPlot_attitude->yAxis->setLabel("degree");
+    ui->customPlot_attitude->yAxis->setLabel("attitude(deg)");
     ui->customPlot_attitude->yAxis->setRange(-90, 90);
 
     // Set timer to replot (60fps)
@@ -111,13 +116,18 @@ void MainWindow::on_pushButton_Connect_clicked()
         // Reset chart
         for (int i = 0; i < 3; i++) {
             ui->customPlot_accel->graph(i)->data().data()->clear();
+            ui->customPlot_gyro->graph(i)->data().data()->clear();
             ui->customPlot_attitude->graph(i)->data().data()->clear();
         }
 
         ui->customPlot_accel->xAxis->setRange(0, 5);
-        ui->customPlot_accel->yAxis->setRange(-2, 2);
+        ui->customPlot_accel->yAxis->setRange(-4, 4);
         ui->customPlot_accel->setInteraction(QCP::iRangeDrag, false);
         ui->customPlot_accel->setInteraction(QCP::iRangeZoom, false);
+        ui->customPlot_gyro->xAxis->setRange(0, 5);
+        ui->customPlot_gyro->yAxis->setRange(-90, 90);
+        ui->customPlot_gyro->setInteraction(QCP::iRangeDrag, false);
+        ui->customPlot_gyro->setInteraction(QCP::iRangeZoom, false);
         ui->customPlot_attitude->xAxis->setRange(0, 5);
         ui->customPlot_attitude->yAxis->setRange(-90, 90);
         ui->customPlot_attitude->setInteraction(QCP::iRangeDrag, false);
@@ -141,12 +151,16 @@ void MainWindow::on_pushButton_Connect_clicked()
 void MainWindow::disconnectSlot()
 {
     timer->stop();
-    port->clear();
-    port->clearError();
-    port->close();
+
+    if (port->isOpen()) {
+        port->clear();
+        port->close();
+    }
     qDebug() << "Serial disconnected!";
     ui->customPlot_accel->setInteraction(QCP::iRangeDrag, true);
     ui->customPlot_accel->setInteraction(QCP::iRangeZoom, true);
+    ui->customPlot_gyro->setInteraction(QCP::iRangeDrag, true);
+    ui->customPlot_gyro->setInteraction(QCP::iRangeZoom, true);
     ui->customPlot_attitude->setInteraction(QCP::iRangeDrag, true);
     ui->customPlot_attitude->setInteraction(QCP::iRangeZoom, true);
     ui->pushButton_Connect->setText("Connect");
@@ -175,8 +189,10 @@ void MainWindow::receiveDataSlot(const QVector<double> &data)
     for (int i = 0; i < data.size(); i++) {
         if (i < 3)
             ui->customPlot_accel->graph(i)->addData(x, data.at(i));
+        else if (i < 6)
+            ui->customPlot_gyro->graph(i - 3)->addData(x, data.at(i));
         else
-            ui->customPlot_attitude->graph(i - 3)->addData(x, data.at(i));
+            ui->customPlot_attitude->graph(i - 6)->addData(x, data.at(i));
     }
 
     get_data.append(data);
@@ -189,13 +205,16 @@ void MainWindow::updateSlot()
     ui->customPlot_accel->xAxis->
             setRange(x, ui->customPlot_accel->xAxis->range().size(), Qt::AlignRight);
     ui->customPlot_accel->replot();
+    ui->customPlot_gyro->xAxis->
+            setRange(x, ui->customPlot_gyro->xAxis->range().size(), Qt::AlignRight);
+    ui->customPlot_gyro->replot();
     ui->customPlot_attitude->xAxis->
             setRange(x, ui->customPlot_attitude->xAxis->range().size(), Qt::AlignRight);
     ui->customPlot_attitude->replot();
     // Update attitude with euler angle
     if (!get_data.isEmpty()) {
-        cuboidTransform->setRotationY((float)(get_data.last().at(5)));
-        cuboidTransform->setRotationZ((float)(-get_data.last().at(4)));
-        cuboidTransform->setRotationX((float)(get_data.last().at(3)));
+        cuboidTransform->setRotationY((float)(-get_data.last().at(8)));
+        cuboidTransform->setRotationZ((float)(get_data.last().at(7)));
+        cuboidTransform->setRotationX((float)(get_data.last().at(6)));
     }
 }

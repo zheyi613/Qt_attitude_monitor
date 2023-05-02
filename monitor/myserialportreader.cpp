@@ -21,7 +21,7 @@ void MySerialPortReader::handleLine(const QByteArray &line)
 
     str_list.last().remove(str_list.last().length() - 1, 1);
 
-    if (str_list.size() == 6) {
+    if (str_list.size() == 9) {
         QVector<double> data_vector;
 
         for (int i = 0; i < str_list.size(); i++) {
@@ -66,6 +66,9 @@ void MySerialPortReader::handleError(QSerialPort::SerialPortError error)
     default:
         return;
     }
+
+    if (m_port->isOpen())
+        m_port->close();
 
     QMessageBox msgBox(QMessageBox::Critical, "Error", msg);
     msgBox.exec();

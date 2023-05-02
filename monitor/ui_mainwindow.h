@@ -47,6 +47,7 @@ public:
     QVBoxLayout *verticalLayout_3DCube;
     QVBoxLayout *verticalLayout_ChartView;
     QCustomPlot *customPlot_accel;
+    QCustomPlot *customPlot_gyro;
     QCustomPlot *customPlot_attitude;
 
     void setupUi(QMainWindow *MainWindow)
@@ -160,6 +161,11 @@ public:
         customPlot_accel->setObjectName(QString::fromUtf8("customPlot_accel"));
 
         verticalLayout_ChartView->addWidget(customPlot_accel);
+
+        customPlot_gyro = new QCustomPlot(centralwidget);
+        customPlot_gyro->setObjectName(QString::fromUtf8("customPlot_gyro"));
+
+        verticalLayout_ChartView->addWidget(customPlot_gyro);
 
         customPlot_attitude = new QCustomPlot(centralwidget);
         customPlot_attitude->setObjectName(QString::fromUtf8("customPlot_attitude"));
