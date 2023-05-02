@@ -3,7 +3,7 @@ Use Qt GUI to visualize attitude and plot 6-axis data
 
 ## GUI
 
-![image](https://user-images.githubusercontent.com/86707047/192147313-6e02f8c6-44e5-431f-af74-5dc4ea2f298d.png)
+![image](https://user-images.githubusercontent.com/86707047/235585595-66f254bb-3553-4211-8283-6ee7abcb648b.png)
 
 ## 使用步驟
 
