@@ -48,7 +48,7 @@ private:
     QTimer *timer;
     Qt3DCore::QTransform *cuboidTransform;
     QVector<QVector<double>> get_data;
-    double x;
-    uint32_t count;
+    uint64_t count;
+    uint64_t plot_count;
 };
 #endif // MAINWINDOW_H

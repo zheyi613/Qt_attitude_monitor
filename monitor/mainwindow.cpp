@@ -135,6 +135,7 @@ void MainWindow::on_pushButton_Connect_clicked()
 
         // Clear data
         count = 0;
+        plot_count = 0;
         get_data.clear();
 
         // Set button and group
@@ -184,23 +185,29 @@ void MainWindow::findAvaliablePort()
 
 void MainWindow::receiveDataSlot(const QVector<double> &data)
 {
-    x = (double)count / (double)(ui->spinBox_PacketRate->value());
-
-    for (int i = 0; i < data.size(); i++) {
-        if (i < 3)
-            ui->customPlot_accel->graph(i)->addData(x, data.at(i));
-        else if (i < 6)
-            ui->customPlot_gyro->graph(i - 3)->addData(x, data.at(i));
-        else
-            ui->customPlot_attitude->graph(i - 6)->addData(x, data.at(i));
-    }
-
     get_data.append(data);
     count++;
 }
 
 void MainWindow::updateSlot()
 {
+    double x = (double)plot_count / (double)(ui->spinBox_PacketRate->value());
+
+    // Add data to graph
+    while (plot_count < count - 1){
+        QVector<double> data = get_data.at(plot_count);
+
+        for (int i = 0; i < data.size(); i++) {
+            if (i < 3)
+                ui->customPlot_accel->graph(i)->addData(x, data.at(i));
+            else if (i < 6)
+                ui->customPlot_gyro->graph(i - 3)->addData(x, data.at(i));
+            else
+                ui->customPlot_attitude->graph(i - 6)->addData(x, data.at(i));
+        }
+        x = (double)plot_count / (double)(ui->spinBox_PacketRate->value());
+        plot_count++;
+    }
     // Replot
     ui->customPlot_accel->xAxis->
             setRange(x, ui->customPlot_accel->xAxis->range().size(), Qt::AlignRight);

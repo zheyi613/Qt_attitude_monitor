@@ -10,6 +10,7 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFormLayout>
@@ -29,6 +30,8 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *actionSave_Data;
+    QAction *actionSet_Axis_Range;
     QWidget *centralwidget;
     QFormLayout *formLayout;
     QHBoxLayout *horizontalLayout;
@@ -54,10 +57,15 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1170, 617);
+        MainWindow->resize(1280, 720);
+        MainWindow->setMinimumSize(QSize(720, 480));
         QFont font;
         font.setFamilies({QString::fromUtf8("Consolas")});
         MainWindow->setFont(font);
+        actionSave_Data = new QAction(MainWindow);
+        actionSave_Data->setObjectName(QString::fromUtf8("actionSave_Data"));
+        actionSet_Axis_Range = new QAction(MainWindow);
+        actionSet_Axis_Range->setObjectName(QString::fromUtf8("actionSet_Axis_Range"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         formLayout = new QFormLayout(centralwidget);
@@ -194,6 +202,8 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Monitor", nullptr));
+        actionSave_Data->setText(QCoreApplication::translate("MainWindow", "Save Data", nullptr));
+        actionSet_Axis_Range->setText(QCoreApplication::translate("MainWindow", "Set Axis Range", nullptr));
         groupBox_SerialPort->setTitle(QCoreApplication::translate("MainWindow", "Serial Port", nullptr));
         label_Port->setText(QCoreApplication::translate("MainWindow", "Port :", nullptr));
         label_BaudRate->setText(QCoreApplication::translate("MainWindow", "BaudRate :", nullptr));
