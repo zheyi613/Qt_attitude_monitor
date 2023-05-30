@@ -1,5 +1,5 @@
 # Qt_attitude_monitor
-Use Qt GUI to visualize attitude and plot 6-axis data
+Use Qt GUI to visualize attitude and plot 9-axis data
 
 ## GUI
 
