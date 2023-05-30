@@ -39,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
     timer = new QTimer(this);
     timer->setInterval(16);
 
+    get_data.reserve(1800000);
+
     // Cube viewer setup
     Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();
     view->defaultFrameGraph()->setClearColor(QColor(QRgb(0xc8c8c8)));
@@ -194,7 +196,7 @@ void MainWindow::updateSlot()
     double x = (double)plot_count / (double)(ui->spinBox_PacketRate->value());
 
     // Add data to graph
-    while (plot_count < count - 1){
+    while (plot_count + 1 < count){
         QVector<double> data = get_data.at(plot_count);
 
         for (int i = 0; i < data.size(); i++) {

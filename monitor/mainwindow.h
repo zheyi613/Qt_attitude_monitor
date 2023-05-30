@@ -50,5 +50,6 @@ private:
     QVector<QVector<double>> get_data;
     uint64_t count;
     uint64_t plot_count;
+    uint64_t data_capacity;
 };
 #endif // MAINWINDOW_H

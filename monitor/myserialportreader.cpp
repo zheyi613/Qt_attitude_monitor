@@ -24,6 +24,8 @@ void MySerialPortReader::handleLine(const QByteArray &line)
     if (str_list.size() == 9) {
         QVector<double> data_vector;
 
+        data_vector.reserve(str_list.size());
+
         for (int i = 0; i < str_list.size(); i++) {
             data_vector.append(str_list.at(i).toDouble());
         }
