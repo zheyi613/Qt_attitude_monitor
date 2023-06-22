@@ -13,6 +13,7 @@
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QPointLight>
+#include <QQuaternion>
 
 #include "myserialportreader.h"
 #include "qcustomplot.h"
