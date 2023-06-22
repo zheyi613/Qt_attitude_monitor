@@ -207,8 +207,8 @@ void MainWindow::updateSlot()
             else
                 ui->customPlot_attitude->graph(i - 6)->addData(x, data.at(i));
         }
-        x = (double)plot_count / (double)(ui->spinBox_PacketRate->value());
         plot_count++;
+        x = (double)plot_count / (double)(ui->spinBox_PacketRate->value());
     }
     // Replot
     ui->customPlot_accel->xAxis->
@@ -221,11 +221,11 @@ void MainWindow::updateSlot()
             setRange(x, ui->customPlot_attitude->xAxis->range().size(), Qt::AlignRight);
     ui->customPlot_attitude->replot();
     // Update attitude with euler angle
-    if (!get_data.isEmpty()) {
+    if (plot_count > 0) {
         QQuaternion rotation =
-                QQuaternion::fromEulerAngles(-get_data.at(plot_count).at(7),
-                                             -get_data.at(plot_count).at(8),
-                                              get_data.at(plot_count).at(6));
+                QQuaternion::fromEulerAngles(-get_data.at(plot_count - 1).at(7),
+                                             -get_data.at(plot_count - 1).at(8),
+                                              get_data.at(plot_count - 1).at(6));
         cuboidTransform->setRotation(rotation);
     }
 }
