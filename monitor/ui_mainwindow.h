@@ -42,10 +42,12 @@ public:
     QLabel *label_Port;
     QLabel *label_BaudRate;
     QLabel *label_PacketRate;
+    QLabel *label_Coordinate;
     QVBoxLayout *verticalLayout_Parameter;
     MyComboBox *comboBox_Port;
     QComboBox *comboBox_BaudRate;
     QSpinBox *spinBox_PacketRate;
+    QComboBox *comboBox_Coordinate;
     QPushButton *pushButton_Connect;
     QVBoxLayout *verticalLayout_3DCube;
     QVBoxLayout *verticalLayout_ChartView;
@@ -73,6 +75,7 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         verticalLayout_SerialPort = new QVBoxLayout();
+        verticalLayout_SerialPort->setSpacing(6);
         verticalLayout_SerialPort->setObjectName(QString::fromUtf8("verticalLayout_SerialPort"));
         groupBox_SerialPort = new QGroupBox(centralwidget);
         groupBox_SerialPort->setObjectName(QString::fromUtf8("groupBox_SerialPort"));
@@ -103,6 +106,11 @@ public:
         label_PacketRate->setObjectName(QString::fromUtf8("label_PacketRate"));
 
         verticalLayout_Label->addWidget(label_PacketRate);
+
+        label_Coordinate = new QLabel(groupBox_SerialPort);
+        label_Coordinate->setObjectName(QString::fromUtf8("label_Coordinate"));
+
+        verticalLayout_Label->addWidget(label_Coordinate);
 
 
         horizontalLayout_SerialPortGroup->addLayout(verticalLayout_Label);
@@ -137,6 +145,14 @@ public:
         spinBox_PacketRate->setValue(100);
 
         verticalLayout_Parameter->addWidget(spinBox_PacketRate);
+
+        comboBox_Coordinate = new QComboBox(groupBox_SerialPort);
+        comboBox_Coordinate->addItem(QString());
+        comboBox_Coordinate->addItem(QString());
+        comboBox_Coordinate->setObjectName(QString::fromUtf8("comboBox_Coordinate"));
+        comboBox_Coordinate->setEditable(false);
+
+        verticalLayout_Parameter->addWidget(comboBox_Coordinate);
 
 
         horizontalLayout_SerialPortGroup->addLayout(verticalLayout_Parameter);
@@ -194,6 +210,7 @@ public:
 
         comboBox_Port->setCurrentIndex(-1);
         comboBox_BaudRate->setCurrentIndex(4);
+        comboBox_Coordinate->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -208,6 +225,7 @@ public:
         label_Port->setText(QCoreApplication::translate("MainWindow", "Port :", nullptr));
         label_BaudRate->setText(QCoreApplication::translate("MainWindow", "BaudRate :", nullptr));
         label_PacketRate->setText(QCoreApplication::translate("MainWindow", "PacketRate :", nullptr));
+        label_Coordinate->setText(QCoreApplication::translate("MainWindow", "Coordinate  :", nullptr));
         comboBox_Port->setCurrentText(QString());
         comboBox_Port->setPlaceholderText(QString());
         comboBox_BaudRate->setItemText(0, QCoreApplication::translate("MainWindow", "9600", nullptr));
@@ -218,6 +236,9 @@ public:
         comboBox_BaudRate->setItemText(5, QCoreApplication::translate("MainWindow", "230400", nullptr));
         comboBox_BaudRate->setItemText(6, QCoreApplication::translate("MainWindow", "460800", nullptr));
         comboBox_BaudRate->setItemText(7, QCoreApplication::translate("MainWindow", "921600", nullptr));
+
+        comboBox_Coordinate->setItemText(0, QCoreApplication::translate("MainWindow", "NED (North-East-Down)", nullptr));
+        comboBox_Coordinate->setItemText(1, QCoreApplication::translate("MainWindow", "ENU (East-North-Up)", nullptr));
 
         pushButton_Connect->setText(QCoreApplication::translate("MainWindow", "Connect", nullptr));
     } // retranslateUi

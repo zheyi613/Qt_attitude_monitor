@@ -222,10 +222,16 @@ void MainWindow::updateSlot()
     ui->customPlot_attitude->replot();
     // Update attitude with euler angle
     if (plot_count > 0) {
-        QQuaternion rotation =
-                QQuaternion::fromEulerAngles(-get_data.at(plot_count - 1).at(7),
-                                             -get_data.at(plot_count - 1).at(8),
-                                              get_data.at(plot_count - 1).at(6));
+        QQuaternion rotation;
+        if (ui->comboBox_Coordinate->currentIndex() == 0) {
+            rotation = QQuaternion::fromEulerAngles(-get_data.at(plot_count - 1).at(7),
+                                                    -get_data.at(plot_count - 1).at(8),
+                                                     get_data.at(plot_count - 1).at(6));
+        } else if (ui->comboBox_Coordinate->currentIndex() == 1) {
+            rotation = QQuaternion::fromEulerAngles(-get_data.at(plot_count - 1).at(7),
+                                                     get_data.at(plot_count - 1).at(8),
+                                                     get_data.at(plot_count - 1).at(6));
+        }
         cuboidTransform->setRotation(rotation);
     }
 }

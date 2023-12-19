@@ -30,6 +30,9 @@
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,3">
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_SerialPort" stretch="1,1,6">
+        <property name="spacing">
+         <number>6</number>
+        </property>
         <item>
          <widget class="QGroupBox" name="groupBox_SerialPort">
           <property name="font">
@@ -83,6 +86,13 @@
               <widget class="QLabel" name="label_PacketRate">
                <property name="text">
                 <string>PacketRate :</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_Coordinate">
+               <property name="text">
+                <string>Coordinate  :</string>
                </property>
               </widget>
              </item>
@@ -170,6 +180,26 @@
                <property name="value">
                 <number>100</number>
                </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBox_Coordinate">
+               <property name="editable">
+                <bool>false</bool>
+               </property>
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>NED (North-East-Down)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>ENU (East-North-Up)</string>
+                </property>
+               </item>
               </widget>
              </item>
             </layout>
